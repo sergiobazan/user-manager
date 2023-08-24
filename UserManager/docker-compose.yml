@@ -12,13 +12,12 @@ services:
     container_name: usermanager-services
     ports:
       - "8088:80"
-      - "5000:5000"
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       - ConnectionStrings__DefaultConn=User ID=postgres;Password=postgres;Server=app_db;Port=5432;Database=UserManagerDb; IntegratedSecurity=true;Pooling=true;
-      - ASPNETCORE_URLS=https://+:5000;http://+:80
+      - ASPNETCORE_URLS=http://+:80
     networks:
       - dev
 
