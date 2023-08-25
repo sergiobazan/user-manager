@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { userClient } from "../client/user";
+import { useUpload } from "../context/UserProvider";
 
 export const CreateUser = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ export const CreateUser = () => {
   });
   const [state, setState] = useState("Activo");
   const [loading, setLoading] = useState(false);
+
+  const { upload, setUpload } = useUpload();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -32,6 +35,7 @@ export const CreateUser = () => {
       setLoading(true);
       await userClient.post("/users", data);
       toast.success("Usuario creado. Volver a pagina principal");
+      setUpload(!upload);
     } catch (error) {
       toast.error("Error creando usuario");
     } finally {

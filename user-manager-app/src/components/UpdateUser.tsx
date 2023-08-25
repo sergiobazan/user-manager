@@ -2,6 +2,7 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { userClient } from "../client/user";
+import { useUpload } from "../context/UserProvider";
 
 export const UpdateUser = () => {
   const { userId } = useParams();
@@ -15,6 +16,7 @@ export const UpdateUser = () => {
   const [state, setState] = useState("Activo");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const { upload, setUpload } = useUpload();
 
   useEffect(() => {
     (async () => {
@@ -49,6 +51,7 @@ export const UpdateUser = () => {
       setLoading(true);
       await userClient.put(`/users/${userId}`, data);
       toast.success("Usuario actualizado. Volver a pagina principal");
+      setUpload(!upload);
     } catch (error) {
       toast.error("Error creando usuario");
     } finally {

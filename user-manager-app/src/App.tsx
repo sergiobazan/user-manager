@@ -13,16 +13,23 @@ import {
 } from "react-router-dom";
 import { CreateUser } from "./components/CreateUser";
 import { UpdateUser } from "./components/UpdateUser";
+import { UserProvider, useUpload } from "./context/UserProvider";
 
 const router = createBrowserRouter([{ path: "*", Component: Root }]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
+  );
 }
 
 function Root() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const { upload } = useUpload();
 
   useEffect(() => {
     (async () => {
@@ -36,7 +43,7 @@ function Root() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [upload]);
 
   return (
     <>
