@@ -1,0 +1,56 @@
+version: "3.4"
+
+networks:
+  netreact:
+    driver: bridge
+
+services:
+  frontend:
+    image: user-manager-front
+    depends_on:
+      - "backend"
+    container_name: frontend
+    ports:
+      - "3000:5173"
+    build:
+      context: ./user-manager-app
+      dockerfile: Dockerfile
+    environment:
+      - VITE_APP_API_URL=http://localhost:8088/api
+    networks:
+      - netreact
+
+  backend:
+    image: usermanager-api
+    depends_on:
+      - "db"
+    container_name: backend_api
+    ports:
+      - "8088:80"
+      - "5000:443"
+    build:
+      context: ./UserManager
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConn=User ID=postgres;Password=postgres;Server=api_db;Port=5432;Database=UserManagerDb; IntegratedSecurity=true;Pooling=true;
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - netreact
+
+  db:
+    image: postgres:latest
+    container_name: api_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=UserManagerDb
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - api_data:/var/lib/postgresql/data
+    networks:
+      - netreact
+
+volumes:
+  api_data:
